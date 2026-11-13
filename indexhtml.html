@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Весела музична фізкультхвилинка!</title>
+    <!-- Підключення Tailwind CSS та дружнього шрифту Nunito -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(180deg, #E0F7FA 0%, #FFF9C4 60%, #DCEDC8 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Декоративні хмаринки та сонечко на фоні */
+        @keyframes floatCloud {
+            0%, 100% { transform: translateX(0px); }
+            50% { transform: translateX(25px); }
+        }
+        @keyframes spinSun {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .cloud-anim { animation: floatCloud 8s ease-in-out infinite; }
+        .cloud-anim-delay { animation: floatCloud 11s ease-in-out infinite reverse; }
+        .sun-rays { animation: spinSun 30s linear infinite; transform-origin: center; }
+
+        /* АНІМАЦІЇ ПЕРСОНАЖА */
+        /* 1. Спокійний стан (дихання / погойдування) */
+        @keyframes idleBreathe {
+            0%, 100% { transform: scale(1) translateY(0); }
+            50% { transform: scale(1.03, 0.98) translateY(3px); }
+        }
+        .anim-idle {
+            animation: idleBreathe 2.5s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+
+        /* 2. Вправа: Пострибай як зайчик */
+        @keyframes bunnyJump {
+            0%, 100% { transform: translateY(0) scale(1.08, 0.9); }
+            20% { transform: translateY(-55px) scale(0.92, 1.12); }
+            45% { transform: translateY(-65px) scale(0.95, 1.08); }
+            70% { transform: translateY(0) scale(1.12, 0.86); }
+            85% { transform: translateY(-10px) scale(0.98, 1.03); }
+        }
+        .anim-jump {
+            animation: bunnyJump 0.75s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+            transform-origin: bottom center;
+        }
+        .anim-jump .arm-left {
+            animation: armJumpL 0.75s ease-in-out infinite;
+            transform-origin: 65px 125px;
+        }
+        .anim-jump .arm-right {
+            animation: armJumpR 0.75s ease-in-out infinite;
+            transform-origin: 135px 125px;
+        }
+        @keyframes armJumpL {
+            0%, 100% { transform: rotate(15deg); }
+            40% { transform: rotate(65deg); }
+        }
+        @keyframes armJumpR {
+            0%, 100% { transform: rotate(-15deg); }
+            40% { transform: rotate(-65deg); }
+        }
+
+        /* 3. Вправа: Покрутися як млин (нахили + махи руками) */
+        @keyframes windmillBody {
+            0%, 100% { transform: rotate(-16deg) scale(1.02); }
+            50% { transform: rotate(16deg) scale(1.02); }
+        }
+        @keyframes windmillArms {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .anim-windmill {
+            animation: windmillBody 1.2s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+        .anim-windmill .arm-left {
+            animation: armWaveL 0.6s alternate infinite ease-in-out;
+            transform-origin: 65px 125px;
+        }
+        .anim-windmill .arm-right {
+            animation: armWaveR 0.6s alternate infinite ease-in-out;
+            transform-origin: 135px 125px;
+        }
+        @keyframes armWaveL {
+            0% { transform: rotate(-20deg); }
+            100% { transform: rotate(120deg); }
+        }
+        @keyframes armWaveR {
+            0% { transform: rotate(-120deg); }
+            100% { transform: rotate(20deg); }
+        }
+
+        /* 4. Вправа: Потягнися до сонечка */
+        @keyframes stretchSun {
+            0%, 100% { transform: scale(1, 1) translateY(0); }
+            50% { transform: scale(0.93, 1.15) translateY(-22px); }
+        }
+        .anim-stretch {
+            animation: stretchSun 1.6s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+        .anim-stretch .arm-left {
+            animation: reachUpL 1.6s ease-in-out infinite;
+            transform-origin: 65px 125px;
+        }
+        .anim-stretch .arm-right {
+            animation: reachUpR 1.6s ease-in-out infinite;
+            transform-origin: 135px 125px;
+        }
+        @keyframes reachUpL {
+            0%, 100% { transform: rotate(115deg); }
+            50% { transform: rotate(148deg); }
+        }
+        @keyframes reachUpR {
+            0%, 100% { transform: rotate(-115deg); }
+            50% { transform: rotate(-148deg); }
+        }
+
+        /* 5. Радісний танець переможця в кінці */
+        @keyframes celebrateDance {
+            0%, 100% { transform: translateY(0) rotate(-8deg) scale(1.05); }
+            25% { transform: translateY(-30px) rotate(0deg) scale(1.1); }
+            50% { transform: translateY(0) rotate(8deg) scale(1.05); }
+            75% { transform: translateY(-30px) rotate(0deg) scale(1.1); }
+        }
+        .anim-celebrate {
+            animation: celebrateDance 0.8s ease-in-out infinite;
+            transform-origin: bottom center;
+        }
+        .anim-celebrate .arm-left {
+            transform: rotate(135deg);
+            transform-origin: 65px 125px;
+        }
+        .anim-celebrate .arm-right {
+            transform: rotate(-135deg);
+            transform-origin: 135px 125px;
+        }
+
+        /* Кнопки з ефектом об'ємного натискання */
+        .kid-btn {
+            transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 7px 0 rgba(0, 0, 0, 0.18), 0 12px 20px rgba(0, 0, 0, 0.1);
+        }
+        .kid-btn:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.02);
+            filter: brightness(1.05);
+        }
+        .kid-btn:active:not(:disabled) {
+            transform: translateY(5px) scale(0.98);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+        }
+
+        /* Анімація появи підказки */
+        @keyframes popBubble {
+            0% { transform: scale(0.75) translateY(10px); opacity: 0; }
+            70% { transform: scale(1.05) translateY(-2px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); opacity: 1; }
+        }
+        .bubble-pop {
+            animation: popBubble 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+    </style>
+</head>
+<body class="relative flex flex-col justify-between min-h-screen text-slate-800">
+
+    <!-- Canvas для святкових салютів та конфетті -->
+    <canvas id="fireworksCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+    <!-- Фоновий декор: Сонечко та хмаринки -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <!-- Сонечко у правому верхньому куті -->
+        <svg class="absolute -top-8 -right-8 w-40 h-40 sm:w-52 sm:h-52 opacity-90" viewBox="0 0 200 200">
+            <g class="sun-rays" fill="#FDD835">
+                <polygon points="100,5 112,35 88,35"/>
+                <polygon points="100,195 112,165 88,165"/>
+                <polygon points="5,100 35,112 35,88"/>
+                <polygon points="195,100 165,112 165,88"/>
+                <polygon points="32,32 58,48 48,58"/>
+                <polygon points="168,168 142,152 152,142"/>
+                <polygon points="168,32 152,58 142,48"/>
+                <polygon points="32,168 48,142 58,152"/>
+            </g>
+            <circle cx="100" cy="100" r="52" fill="#FFEB3B" stroke="#FBC02D" stroke-width="6"/>
+        </svg>
+        <!-- Хмаринки -->
+        <svg class="cloud-anim absolute top-14 left-4 sm:left-16 w-32 sm:w-44 opacity-80" viewBox="0 0 200 100" fill="#FFFFFF">
+            <path d="M45,80 L155,80 C175,80 185,65 180,50 C175,35 160,30 148,33 C142,15 120,8 102,15 C88,5 65,10 58,28 C40,28 25,40 25,58 C25,70 33,80 45,80 Z"/>
+        </svg>
+        <svg class="cloud-anim-delay absolute top-32 right-10 sm:right-32 w-28 sm:w-36 opacity-70" viewBox="0 0 200 100" fill="#FFFFFF">
+            <path d="M45,80 L155,80 C175,80 185,65 180,50 C175,35 160,30 148,33 C142,15 120,8 102,15 C88,5 65,10 58,28 C40,28 25,40 25,58 C25,70 33,80 45,80 Z"/>
+        </svg>
+    </div>
+
+    <!-- ВЕРХНЯ ПАНЕЛЬ: Перемикач персонажа, заголовок та звук -->
+    <header class="relative z-20 w-full max-w-5xl mx-auto px-4 pt-3 sm:pt-4 flex flex-wrap items-center justify-between gap-2">
+        <!-- Вибір тренера -->
+        <div class="flex items-center bg-white/90 backdrop-blur-sm p-1.5 rounded-full shadow-md border-2 border-sky-200">
+            <button id="btnSelectBear" onclick="selectCharacter('bear')" class="px-3 sm:px-4 py-1.5 rounded-full font-extrabold text-sm sm:text-base transition-all bg-amber-400 text-amber-950 shadow-sm flex items-center gap-1.5">
+                <span class="text-lg">🐻</span> Ведмедик
+            </button>
+            <button id="btnSelectRobot" onclick="selectCharacter('robot')" class="px-3 sm:px-4 py-1.5 rounded-full font-extrabold text-sm sm:text-base transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5">
+                <span class="text-lg">🤖</span> Робот
+            </button>
+        </div>
+
+        <!-- Назва -->
+        <h1 class="hidden md:block text-2xl lg:text-3xl font-black text-sky-900 tracking-tight drop-shadow-sm">
+            Весела фізкультхвилинка! 🌟
+        </h1>
+
+        <!-- Кнопка звуку -->
+        <button id="btnSoundToggle" onclick="toggleSound()" class="bg-white/90 hover:bg-white active:scale-95 transition-all px-4 py-2 rounded-full shadow-md border-2 border-emerald-300 font-extrabold text-sm sm:text-base text-emerald-800 flex items-center gap-2">
+            <span id="soundIcon" class="text-xl">🔊</span>
+            <span id="soundLabel">Музика: УВІМК</span>
+        </button>
+    </header>
+
+    <!-- ЦЕНТРАЛЬНА АРЕНА: Таймер, Хмаринка-підказка та Персонаж -->
+    <main class="relative z-10 flex-1 flex flex-col items-center justify-center w-full max-w-4xl mx-auto px-4 py-2">
+        
+        <!-- Верхній блок: Таймер зворотного відліку -->
+        <div class="flex flex-col items-center mb-1 sm:mb-2">
+            <div class="relative flex items-center justify-center bg-white rounded-3xl px-6 py-2 sm:px-8 sm:py-2.5 shadow-lg border-4 border-amber-400">
+                <!-- Круговий індикатор прогресу -->
+                <svg class="w-12 h-12 sm:w-14 sm:h-14 -rotate-90 mr-3" viewBox="0 0 60 60">
+                    <circle cx="30" cy="30" r="24" fill="none" stroke="#FEF3C7" stroke-width="7"/>
+                    <circle id="timerRing" cx="30" cy="30" r="24" fill="none" stroke="#F59E0B" stroke-width="7" 
+                            stroke-linecap="round" stroke-dasharray="150.8" stroke-dashoffset="0"
+                            style="transition: stroke-dashoffset 0.25s linear, stroke 0.3s ease;"/>
+                </svg>
+                <div class="flex items-baseline">
+                    <span id="timerDisplay" class="text-4xl sm:text-5xl font-black text-amber-600 tabular-nums tracking-tight">20</span>
+                    <span class="ml-1.5 text-lg sm:text-xl font-extrabold text-amber-800">сек</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Хмаринка з підбадьорливими підказками -->
+        <div class="min-h-[76px] sm:min-h-[84px] flex items-center justify-center w-full max-w-xl my-1">
+            <div id="speechBubble" class="bubble-pop relative bg-white border-4 border-sky-400 rounded-3xl px-5 py-3 sm:px-7 sm:py-3.5 shadow-xl text-center">
+                <p id="speechText" class="text-lg sm:text-2xl font-black text-sky-950 leading-snug">
+                    Привіт! Я твій тренер! Обирай вправу внизу! 👇
+                </p>
+                <!-- Хвостик хмаринки вниз -->
+                <div class="absolute -bottom-3.5 left-1/2 -translate-x-1/2 w-6 h-6 bg-white border-r-4 border-b-4 border-sky-400 rotate-45"></div>
+            </div>
+        </div>
+
+        <!-- Сцена з великим анімованим персонажем -->
+        <div class="relative flex flex-col items-center justify-end h-56 sm:h-64 md:h-72 w-full max-w-sm mt-1">
+            <!-- Тінь під ногами персонажа -->
+            <div id="characterShadow" class="w-36 h-6 bg-emerald-900/15 rounded-full blur-[2px] mb-1 transition-transform"></div>
+
+            <!-- Контейнер персонажа (змінює класи анімації) -->
+            <div id="characterWrapper" class="anim-idle absolute bottom-3 w-48 h-52 sm:w-56 sm:h-60 flex items-center justify-center">
+                
+                <!-- ПЕРСОНАЖ 1: МИЛИЙ ВЕДМЕДИК 🐻 -->
+                <svg id="svgBear" viewBox="0 0 200 220" class="w-full h-full overflow-visible drop-shadow-md">
+                    <!-- Ліва лапка -->
+                    <g class="arm-left">
+                        <rect x="28" y="112" width="44" height="22" rx="11" fill="#8D5524" stroke="#5C3310" stroke-width="3"/>
+                        <circle cx="30" cy="123" r="9" fill="#D2996C"/>
+                    </g>
+                    <!-- Права лапка -->
+                    <g class="arm-right">
+                        <rect x="128" y="112" width="44" height="22" rx="11" fill="#8D5524" stroke="#5C3310" stroke-width="3"/>
+                        <circle cx="170" cy="123" r="9" fill="#D2996C"/>
+                    </g>
+                    <!-- Ніжки -->
+                    <rect x="65" y="175" width="26" height="32" rx="13" fill="#8D5524" stroke="#5C3310" stroke-width="3"/>
+                    <ellipse cx="78" cy="202" rx="15" ry="9" fill="#D2996C"/>
+                    <rect x="109" y="175" width="26" height="32" rx="13" fill="#8D5524" stroke="#5C3310" stroke-width="3"/>
+                    <ellipse cx="122" cy="202" rx="15" ry="9" fill="#D2996C"/>
+                    <!-- Тулуб -->
+                    <ellipse cx="100" cy="142" rx="46" ry="48" fill="#A0622D" stroke="#5C3310" stroke-width="3.5"/>
+                    <!-- Світлий животик -->
+                    <ellipse cx="100" cy="145" rx="30" ry="34" fill="#F3D1B0"/>
+                    <!-- Спортивна футболка / пов'язка -->
+                    <path d="M57,125 Q100,142 143,125 L140,152 Q100,165 60,152 Z" fill="#FF5252" stroke="#B71C1C" stroke-width="2.5"/>
+                    <text x="100" y="149" text-anchor="middle" fill="#FFF" font-size="16" font-weight="900">★</text>
+                    <!-- Вушка -->
+                    <circle cx="62" cy="40" r="18" fill="#A0622D" stroke="#5C3310" stroke-width="3.5"/>
+                    <circle cx="62" cy="40" r="10" fill="#F3D1B0"/>
+                    <circle cx="138" cy="40" r="18" fill="#A0622D" stroke="#5C3310" stroke-width="3.5"/>
+                    <circle cx="138" cy="40" r="10" fill="#F3D1B0"/>
+                    <!-- Голова -->
+                    <circle cx="100" cy="74" r="44" fill="#A0622D" stroke="#5C3310" stroke-width="3.5"/>
+                    <!-- Спортивна пов'язка на лобі -->
+                    <path d="M58,58 Q100,48 142,58 L144,68 Q100,58 56,68 Z" fill="#00E5FF" stroke="#00838F" stroke-width="2"/>
+                    <!-- Мордочка -->
+                    <ellipse cx="100" cy="84" rx="22" ry="17" fill="#F3D1B0"/>
+                    <!-- Носик -->
+                    <ellipse cx="100" cy="78" rx="8" ry="6" fill="#3E2723"/>
+                    <circle cx="98" cy="76" r="2" fill="#FFF"/>
+                    <!-- Оченята -->
+                    <circle cx="82" cy="68" r="5.5" fill="#212121"/>
+                    <circle cx="80" cy="66" r="2" fill="#FFF"/>
+                    <circle cx="118" cy="68" r="5.5" fill="#212121"/>
+                    <circle cx="116" cy="66" r="2" fill="#FFF"/>
+                    <!-- Рум'янець -->
+                    <ellipse cx="70" cy="82" rx="7" ry="4" fill="#FF8A80" opacity="0.7"/>
+                    <ellipse cx="130" cy="82" rx="7" ry="4" fill="#FF8A80" opacity="0.7"/>
+                    <!-- Усмішка -->
+                    <path id="bearMouth" d="M89,90 Q100,101 111,90" fill="none" stroke="#3E2723" stroke-width="3.5" stroke-linecap="round"/>
+                </svg>
+
+                <!-- ПЕРСОНАЖ 2: ДРУЖНІЙ РОБОТ 🤖 -->
+                <svg id="svgRobot" viewBox="0 0 200 220" class="hidden w-full h-full overflow-visible drop-shadow-md">
+                    <!-- Ліва рука-маніпулятор -->
+                    <g class="arm-left">
+                        <rect x="26" y="114" width="42" height="18" rx="9" fill="#90A4AE" stroke="#37474F" stroke-width="3"/>
+                        <circle cx="26" cy="123" r="11" fill="#FFB300" stroke="#37474F" stroke-width="3"/>
+                    </g>
+                    <!-- Права рука-маніпулятор -->
+                    <g class="arm-right">
+                        <rect x="132" y="114" width="42" height="18" rx="9" fill="#90A4AE" stroke="#37474F" stroke-width="3"/>
+                        <circle cx="174" cy="123" r="11" fill="#FFB300" stroke="#37474F" stroke-width="3"/>
+                    </g>
+                    <!-- Ніжки -->
+                    <rect x="66" y="175" width="24" height="30" rx="8" fill="#78909C" stroke="#37474F" stroke-width="3"/>
+                    <rect x="60" y="196" width="34" height="12" rx="6" fill="#FF7043" stroke="#37474F" stroke-width="3"/>
+                    <rect x="110" y="175" width="24" height="30" rx="8" fill="#78909C" stroke="#37474F" stroke-width="3"/>
+                    <rect x="106" y="196" width="34" height="12" rx="6" fill="#FF7043" stroke="#37474F" stroke-width="3"/>
+                    <!-- Корпус -->
+                    <rect x="56" y="106" width="88" height="74" rx="20" fill="#4FC3F7" stroke="#0277BD" stroke-width="3.5"/>
+                    <!-- Екранчик на грудях із сердечком -->
+                    <rect x="70" y="120" width="60" height="44" rx="10" fill="#E1F5FE" stroke="#0288D1" stroke-width="2.5"/>
+                    <path d="M100,152 C100,152 84,141 84,132 C84,127 89,124 94,127 C97,129 100,132 100,132 C100,132 103,129 106,127 C111,124 116,127 116,132 C116,141 100,152 100,152 Z" fill="#FF4081"/>
+                    <!-- Антена -->
+                    <line x1="100" y1="34" x2="100" y2="14" stroke="#37474F" stroke-width="4" stroke-linecap="round"/>
+                    <circle cx="100" cy="12" r="8" fill="#FFEB3B" stroke="#F57F17" stroke-width="2.5"/>
+                    <!-- Вушка-навушники -->
+                    <rect x="46" y="54" width="12" height="30" rx="6" fill="#FF7043" stroke="#37474F" stroke-width="3"/>
+                    <rect x="142" y="54" width="12" height="30" rx="6" fill="#FF7043" stroke="#37474F" stroke-width="3"/>
+                    <!-- Голова -->
+                    <rect x="56" y="34" width="88" height="66" rx="22" fill="#81D4FA" stroke="#0277BD" stroke-width="3.5"/>
+                    <!-- Екран обличчя -->
+                    <rect x="66" y="44" width="68" height="46" rx="14" fill="#1E293B"/>
+                    <!-- Світлодіодні очі -->
+                    <circle cx="84" cy="62" r="7" fill="#00E676"/>
+                    <circle cx="82" cy="60" r="2.5" fill="#FFF"/>
+                    <circle cx="116" cy="62" r="7" fill="#00E676"/>
+                    <circle cx="114" cy="60" r="2.5" fill="#FFF"/>
+                    <!-- Усмішка -->
+                    <path d="M87,76 Q100,86 113,76" fill="none" stroke="#00E676" stroke-width="3.5" stroke-linecap="round"/>
+                </svg>
+
+            </div>
+        </div>
+
+        <!-- Похвальний банер після завершення вправи -->
+        <div id="celebrationBanner" class="hidden fixed inset-x-4 top-1/3 -translate-y-1/2 z-40 max-w-lg mx-auto bg-gradient-to-r from-amber-300 via-yellow-200 to-amber-300 border-4 border-amber-500 rounded-3xl p-5 sm:p-6 shadow-2xl text-center bubble-pop">
+            <div class="text-4xl sm:text-5xl mb-2">🏆🎉🌟</div>
+            <h2 class="text-2xl sm:text-3xl font-black text-amber-950 mb-1">
+                Чудово! Ти справжній чемпіон!
+            </h2>
+            <p class="text-base sm:text-lg font-bold text-amber-900 mb-4">
+                Обирай наступну веселу вправу або повтори ще раз!
+            </p>
+            <button onclick="closeCelebration()" class="kid-btn bg-emerald-500 hover:bg-emerald-600 text-white font-black text-lg px-8 py-2.5 rounded-2xl border-2 border-emerald-700">
+                Ура! Продовжити 🚀
+            </button>
+        </div>
+
+    </main>
+
+    <!-- НИЖНЯ ПАНЕЛЬ: Кнопки вибору вправ та кнопка Скинути -->
+    <footer class="relative z-20 w-full max-w-5xl mx-auto px-3 sm:px-6 pb-4 sm:pb-6 pt-2">
+        <!-- Три великі кнопки вправ -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            <button id="btnBunny" onclick="startExercise('bunny')" class="kid-btn bg-gradient-to-b from-pink-400 to-rose-500 text-white rounded-3xl p-3.5 sm:p-5 border-4 border-rose-600 flex items-center justify-center sm:flex-col gap-2 text-center">
+                <span class="text-3xl sm:text-5xl drop-shadow">🐰</span>
+                <span class="text-lg sm:text-xl font-black leading-tight drop-shadow-sm">Пострибай як зайчик</span>
+            </button>
+
+            <button id="btnWindmill" onclick="startExercise('windmill')" class="kid-btn bg-gradient-to-b from-sky-400 to-blue-600 text-white rounded-3xl p-3.5 sm:p-5 border-4 border-blue-700 flex items-center justify-center sm:flex-col gap-2 text-center">
+                <span class="text-3xl sm:text-5xl drop-shadow">🌀</span>
+                <span class="text-lg sm:text-xl font-black leading-tight drop-shadow-sm">Покрутися як млин</span>
+            </button>
+
+            <button id="btnSun" onclick="startExercise('sun')" class="kid-btn bg-gradient-to-b from-amber-400 to-orange-500 text-white rounded-3xl p-3.5 sm:p-5 border-4 border-orange-600 flex items-center justify-center sm:flex-col gap-2 text-center">
+                <span class="text-3xl sm:text-5xl drop-shadow">☀️</span>
+                <span class="text-lg sm:text-xl font-black leading-tight drop-shadow-sm">Потягнися до сонечка</span>
+            </button>
+        </div>
+
+        <!-- Кнопка Зупинити / Скинути (з'являється під час вправи) -->
+        <div id="stopControlWrapper" class="hidden mt-3 flex justify-center">
+            <button onclick="resetExercise()" class="kid-btn bg-slate-200 hover:bg-slate-300 text-slate-800 font-extrabold text-base sm:text-lg px-7 py-2.5 rounded-2xl border-2 border-slate-400 flex items-center gap-2">
+                <span>⏹️</span> Зупинити / Скинути
+            </button>
+        </div>
+    </footer>
+
+    <script>
+        /* =========================================================================
+           1. ДАНІ ВПРАВ ТА ПІДБАДЬОРЛИВІ ПІДКАЗКИ УКРАЇНСЬКОЮ МОВОЮ
+           ========================================================================= */
+        const EXERCISE_DURATION = 20; // Тривалість вправи у секундах
+
+        const EXERCISES = {
+            bunny: {
+                name: 'Пострибай як зайчик 🐰',
+                animClass: 'anim-jump',
+                ringColor: '#F43F5E',
+                tempo: 135,
+                prompts: [
+                    'Стриб-скок! Вище-вище, як справжній зайчик! 🐰',
+                    'Молодець! Тримай веселий ритм! 🎵',
+                    'Пружинимо ніжками! Ти стрибаєш супер! ⭐',
+                    'Ще трішки! Зайчики не втомлюються! 💪',
+                    'Фінішна пряма! Останні супер-стрибки! 🚀'
+                ]
+            },
+            windmill: {
+                name: 'Покрутися як млин 🌀',
+                animClass: 'anim-windmill',
+                ringColor: '#0284C7',
+                tempo: 120,
+                prompts: [
+                    'Вітерець дме! Крутимо ручками, як крилами млина! 🌀',
+                    'Вліво-вправо! Спинка рівненька, молодчинка! 🌟',
+                    'Як гарно виходить! Справжній чарівний млин! ✨',
+                    'Дихаємо вільно і посміхаємося! 😄',
+                    'Ще кілька обертів — ти просто супер! 🏆'
+                ]
+            },
+            sun: {
+                name: 'Потягнися до сонечка ☀️',
+                animClass: 'anim-stretch',
+                ringColor: '#F59E0B',
+                tempo: 105,
+                prompts: [
+                    'Тягнемося ручками високо-високо до сонечка! ☀️',
+                    'Стаємо на носочки! Дістаємо до хмаринок! ☁️',
+                    'Які ви високі та стрункі! Чудово! 🌻',
+                    'Збираємо сонячні промінчики в долоньки! ✨',
+                    'Ще разок потягнулися! Молодці! 🎉'
+                ]
+            }
+        };
+
+        /* =========================================================================
+           2. СТАН ДОДАТКУ ТА ЕЛЕМЕНТИ ІНТЕРФЕЙСУ
+           ========================================================================= */
+        let currentExercise = null;
+        let timeLeft = EXERCISE_DURATION;
+        let timerInterval = null;
+        let promptInterval = null;
+        let promptIndex = 0;
+        let soundEnabled = true;
+
+        const timerDisplay = document.getElementById('timerDisplay');
+        const timerRing = document.getElementById('timerRing');
+        const speechBubble = document.getElementById('speechBubble');
+        const speechText = document.getElementById('speechText');
+        const characterWrapper = document.getElementById('characterWrapper');
+        const stopControlWrapper = document.getElementById('stopControlWrapper');
+        const celebrationBanner = document.getElementById('celebrationBanner');
+
+        const FULL_DASH_ARRAY = 150.8; // 2 * Math.PI * 24
+
+        // Перемикання персонажа (Ведмедик / Робот)
+        function selectCharacter(type) {
+            const svgBear = document.getElementById('svgBear');
+            const svgRobot = document.getElementById('svgRobot');
+            const btnBear = document.getElementById('btnSelectBear');
+            const btnRobot = document.getElementById('btnSelectRobot');
+
+            playClickSound();
+
+            if (type === 'bear') {
+                svgBear.classList.remove('hidden');
+                svgRobot.classList.add('hidden');
+                btnBear.className = 'px-3 sm:px-4 py-1.5 rounded-full font-extrabold text-sm sm:text-base transition-all bg-amber-400 text-amber-950 shadow-sm flex items-center gap-1.5';
+                btnRobot.className = 'px-3 sm:px-4 py-1.5 rounded-full font-extrabold text-sm sm:text-base transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5';
+            } else {
+                svgBear.classList.add('hidden');
+                svgRobot.classList.remove('hidden');
+                btnRobot.className = 'px-3 sm:px-4 py-1.5 rounded-full font-extrabold text-sm sm:text-base transition-all bg-sky-400 text-sky-950 shadow-sm flex items-center gap-1.5';
+                btnBear.className = 'px-3 sm:px-4 py-1.5 rounded-full font-extrabold text-sm sm:text-base transition-all text-slate-600 hover:text-slate-900 flex items-center gap-1.5';
+            }
+        }
+
+        // Оновлення тексту в хмаринці з анімацією
+        function updateSpeech(text) {
+            speechText.textContent = text;
+            speechBubble.classList.remove('bubble-pop');
+            void speechBubble.offsetWidth; // Перезапуск CSS-анімації
+            speechBubble.classList.add('bubble-pop');
+        }
+
+        // Оновлення візуального таймера
+        function updateTimerUI() {
+            timerDisplay.textContent = timeLeft;
+            const offset = FULL_DASH_ARRAY * (1 - timeLeft / EXERCISE_DURATION);
+            timerRing.style.strokeDashoffset = offset;
+        }
+
+        // Запуск обраної вправи
+        function startExercise(type) {
+            stopAllTimersAndMusic();
+            closeCelebration(false);
+
+            currentExercise = type;
+            const exData = EXERCISES[type];
+            timeLeft = EXERCISE_DURATION;
+            promptIndex = 0;
+
+            // Встановлюємо анімацію персонажа
+            characterWrapper.className = `absolute bottom-3 w-48 h-52 sm:w-56 sm:h-60 flex items-center justify-center ${exData.animClass}`;
+            timerRing.style.stroke = exData.ringColor;
+
+            // Показуємо кнопку зупинки та підсвічуємо активну кнопку
+            stopControlWrapper.classList.remove('hidden');
+            highlightActiveButton(type);
+
+            updateTimerUI();
+            updateSpeech(exData.prompts[0]);
+
+            // Запускаємо веселу мелодію
+            startBackgroundMusic(exData.tempo);
+
+            // Зміна підбадьорливих підказок кожні 4 секунди
+            promptInterval = setInterval(() => {
+                promptIndex = (promptIndex + 1) % exData.prompts.length;
+                updateSpeech(exData.prompts[promptIndex]);
+            }, 4000);
+
+            // Таймер зворотного відліку
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerUI();
+
+                // Звуковий тік на останніх 3 секундах
+                if (timeLeft > 0 && timeLeft <= 3) {
+                    playCountdownBeep();
+                }
+
+                if (timeLeft <= 0) {
+                    finishExercise();
+                }
+            }, 1000);
+        }
+
+        // Завершення вправи: салюти, фанфари, радість!
+        function finishExercise() {
+            stopAllTimersAndMusic();
+            currentExercise = null;
+            highlightActiveButton(null);
+            stopControlWrapper.classList.add('hidden');
+
+            // Персонаж радісно танцює
+            characterWrapper.className = 'anim-celebrate absolute bottom-3 w-48 h-52 sm:w-56 sm:h-60 flex items-center justify-center';
+            updateSpeech('Ура-а-а! Вправу виконано на відмінно! 🎉');
+
+            // Показуємо похвальний банер
+            celebrationBanner.classList.remove('hidden');
+
+            // Запускаємо фанфари та салюти
+            playFanfare();
+            launchFireworksShow();
+        }
+
+        // Скидання / Зупинка вправи
+        function resetExercise() {
+            stopAllTimersAndMusic();
+            playClickSound();
+            currentExercise = null;
+            timeLeft = EXERCISE_DURATION;
+            timerRing.style.stroke = '#F59E0B';
+            updateTimerUI();
+
+            characterWrapper.className = 'anim-idle absolute bottom-3 w-48 h-52 sm:w-56 sm:h-60 flex items-center justify-center';
+            stopControlWrapper.classList.add('hidden');
+            highlightActiveButton(null);
+            closeCelebration(false);
+            updateSpeech('Відпочили? Обирай наступну вправу! 😊');
+        }
+
+        function closeCelebration(playAudio = true) {
+            if (playAudio) playClickSound();
+            celebrationBanner.classList.add('hidden');
+            if (!currentExercise) {
+                timeLeft = EXERCISE_DURATION;
+                timerRing.style.stroke = '#F59E0B';
+                updateTimerUI();
+                characterWrapper.className = 'anim-idle absolute bottom-3 w-48 h-52 sm:w-56 sm:h-60 flex items-center justify-center';
+            }
+        }
+
+        function highlightActiveButton(activeType) {
+            const map = {
+                bunny: document.getElementById('btnBunny'),
+                windmill: document.getElementById('btnWindmill'),
+                sun: document.getElementById('btnSun')
+            };
+            Object.entries(map).forEach(([key, btn]) => {
+                if (key === activeType) {
+                    btn.classList.add('ring-4', 'ring-yellow-300', 'scale-105');
+                } else {
+                    btn.classList.remove('ring-4', 'ring-yellow-300', 'scale-105');
+                }
+            });
+        }
+
+        function stopAllTimersAndMusic() {
+            if (timerInterval) clearInterval(timerInterval);
+            if (promptInterval) clearInterval(promptInterval);
+            timerInterval = null;
+            promptInterval = null;
+            stopBackgroundMusic();
+        }
+
+        /* =========================================================================
+           3. ГЕНЕРАТОР ВЕСЕЛОЇ МУЗИКИ ТА ЗВУКІВ (WEB AUDIO API)
+           ========================================================================= */
+        let audioCtx = null;
+        let musicLoopTimer = null;
+        let noteStep = 0;
+
+        function ensureAudioContext() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                audioCtx = new AudioContextClass();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('soundIcon');
+            const label = document.getElementById('soundLabel');
+            if (soundEnabled) {
+                icon.textContent = '🔊';
+                label.textContent = 'Музика: УВІМК';
+                playClickSound();
+                if (currentExercise && !musicLoopTimer) {
+                    startBackgroundMusic(EXERCISES[currentExercise].tempo);
+                }
+            } else {
+                icon.textContent = '🔇';
+                label.textContent = 'Музика: ВИМК';
+                stopBackgroundMusic();
+            }
+        }
+
+        // Відтворення однієї веселої ноти (ксилофон/дзвіночок)
+        function playTone(freq, duration, type = 'triangle', volume = 0.14, delay = 0) {
+            if (!soundEnabled) return;
+            ensureAudioContext();
+
+            const now = audioCtx.currentTime + delay;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, now);
+
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.exponentialRampToValueAtTime(volume, now + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(now);
+            osc.stop(now + duration + 0.02);
+        }
+
+        function playClickSound() {
+            playTone(587.33, 0.1, 'sine', 0.12); // D5
+        }
+
+        function playCountdownBeep() {
+            playTone(880, 0.15, 'sine', 0.16); // A5
+        }
+
+        // Весела дитяча мелодія під час зарядки
+        function startBackgroundMusic(tempoBPM = 125) {
+            stopBackgroundMusic();
+            if (!soundEnabled) return;
+            ensureAudioContext();
+
+            // Весела мажорна мелодія (До мажор)
+            const melody = [
+                523.25, 659.25, 783.99, 659.25, // C5 E5 G5 E5
+                698.46, 880.00, 783.99, 659.25, // F5 A5 G5 E5
+                587.33, 783.99, 659.25, 523.25, // D5 G5 E5 C5
+                587.33, 659.25, 523.25, 0       // D5 E5 C5 (пауза)
+            ];
+            const bass = [
+                261.63, 0, 392.00, 0,
+                349.23, 0, 261.63, 0,
+                293.66, 0, 392.00, 0,
+                293.66, 392.00, 261.63, 0
+            ];
+
+            noteStep = 0;
+            const stepMs = (60 / tempoBPM / 2) * 1000;
+
+            const tick = () => {
+                if (!soundEnabled) return;
+                const mNote = melody[noteStep % melody.length];
+                const bNote = bass[noteStep % bass.length];
+
+                if (mNote > 0) playTone(mNote, 0.22, 'triangle', 0.13);
+                if (bNote > 0) playTone(bNote, 0.28, 'sine', 0.11);
+
+                noteStep++;
+            };
+
+            tick();
+            musicLoopTimer = setInterval(tick, stepMs);
+        }
+
+        function stopBackgroundMusic() {
+            if (musicLoopTimer) {
+                clearInterval(musicLoopTimer);
+                musicLoopTimer = null;
+            }
+        }
+
+        // Святкові фанфари в кінці вправи
+        function playFanfare() {
+            if (!soundEnabled) return;
+            ensureAudioContext();
+
+            const fanfareNotes = [
+                { freq: 523.25, time: 0.00, dur: 0.16 }, // C5
+                { freq: 659.25, time: 0.16, dur: 0.16 }, // E5
+                { freq: 783.99, time: 0.32, dur: 0.16 }, // G5
+                { freq: 1046.50, time: 0.48, dur: 0.45 }, // C6
+                { freq: 783.99, time: 0.96, dur: 0.18 }, // G5
+                { freq: 1046.50, time: 1.16, dur: 0.65 }  // C6!
+            ];
+
+            fanfareNotes.forEach(n => {
+                playTone(n.freq, n.dur, 'triangle', 0.2, n.time);
+                playTone(n.freq * 0.5, n.dur, 'sine', 0.15, n.time);
+            });
+        }
+
+        /* =========================================================================
+           4. СВЯТКОВІ САЛЮТИ ТА КОНФЕТТІ НА CANVAS
+           ========================================================================= */
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let fireworksAnimId = null;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const FIREWORK_COLORS = [
+            '#FF1744', '#FF9100', '#FFEA00', '#00E676', '#00B0FF', '#D500F9', '#FF4081'
+        ];
+
+        function createFireworkBurst(x, y) {
+            const count = 48;
+            for (let i = 0; i < count; i++) {
+                const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.2;
+                const speed = 3 + Math.random() * 6.5;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    decay: 0.014 + Math.random() * 0.012,
+                    color: FIREWORK_COLORS[Math.floor(Math.random() * FIREWORK_COLORS.length)],
+                    size: 5 + Math.random() * 5,
+                    isStar: Math.random() > 0.5
+                });
+            }
+        }
+
+        function animateFireworks() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                const p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.12; // легка гравітація
+                p.vx *= 0.98;
+                p.alpha -= p.decay;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            if (particles.length > 0) {
+                fireworksAnimId = requestAnimationFrame(animateFireworks);
+            } else {
+                fireworksAnimId = null;
+            }
+        }
+
+        function launchFireworksShow() {
+            const burstPositions = [
+                { x: canvas.width * 0.25, y: canvas.height * 0.32, delay: 0 },
+                { x: canvas.width * 0.75, y: canvas.height * 0.30, delay: 250 },
+                { x: canvas.width * 0.50, y: canvas.height * 0.22, delay: 500 },
+                { x: canvas.width * 0.30, y: canvas.height * 0.45, delay: 800 },
+                { x: canvas.width * 0.70, y: canvas.height * 0.42, delay: 1050 },
+                { x: canvas.width * 0.50, y: canvas.height * 0.28, delay: 1350 }
+            ];
+
+            burstPositions.forEach(pos => {
+                setTimeout(() => {
+                    createFireworkBurst(pos.x, pos.y);
+                    if (!fireworksAnimId) {
+                        animateFireworks();
+                    }
+                }, pos.delay);
+            });
+        }
+    </script>
+</body>
+</html>
